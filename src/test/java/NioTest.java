@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class NioTest {
-
     @Test
     public void test1() throws IOException {
         System.out.println("test nio");
@@ -32,7 +31,6 @@ public class NioTest {
             while (itr.hasNext()) {
                 SelectionKey cur = itr.next();
 
-//                System.out.println("hash:"+cur.hashCode());
                 // accept
                 if (cur.isAcceptable()) {
                     // AcceptableKey中channel就是ServerSocketChannel
@@ -40,9 +38,6 @@ public class NioTest {
                     acceptedChannel.configureBlocking(false);
                     acceptedChannel.register(selector, SelectionKey.OP_READ);
                     SelectionKey newKey = acceptedChannel.keyFor(selector);
-//                    number++;
-//                    newKey.attach(number);
-//                    System.out.println("accept number: " + number);
                     ChannelHandler ch = new ChannelHandler(newKey);
                     ch.onConnected();
                     newKey.attach(ch);
@@ -51,28 +46,17 @@ public class NioTest {
                 if (cur.isReadable()) {
                     ChannelHandler ch = (ChannelHandler) cur.attachment();
                     ch.onDataArrived();
-
-//                    System.out.println("read hash:" + cur.hashCode());
-//                    int num = -1;
-//                    num = Integer.parseInt(cur.attachment().toString());
-//                    SocketChannel channel = (SocketChannel) cur.channel();
-//                    ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-//                    int len = channel.read(byteBuffer);
-//                    System.out.println("收到数据长度：" + len + " ," + channel.isConnected() + ", " + channel.isOpen() + " ," + channel.isConnectionPending());
-//                    if (len == -1) {
-//                        System.out.println(num+" closed");
-//                        channel.close();
-//                    } else if (len == 0) {
-//
-//                    } else {
-//                        String s = new String(byteBuffer.array(), 0, len);
-//                        System.out.println("-----------------------------------------");
-//                        System.out.println(num + " read: " + s);
-//                        System.out.println();
-//                    }
+                }
+                // write
+                if (cur.isValid() && cur.isWritable()) {
+                    if (cur.attachment() != null) {
+                        ChannelHandler ch = (ChannelHandler) cur.attachment();
+                        ch.onReadyWrite();
+                        System.out.println("写一次");
+                    }
                 }
                 itr.remove();
-                ;
+
             }
 
 

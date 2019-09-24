@@ -1,9 +1,16 @@
 import java.io.*;
+import java.nio.CharBuffer;
 
 public class JHttp {
-    String RESP_OK = "HTTP/1.1 200 OK\n";
-    String CONN_CLOSED = "Connection: Closed\n";
-    String RESP_NOT_FOUND = "HTTP/1.1 404 Not Found\n";
+//    String RESP_OK = "HTTP/1.1 200 OK\n\n";
+//    String CONN_CLOSED = "Connection: Closed\n\n";
+//    String RESP_NOT_FOUND = "HTTP/1.1 404 Not Found\n\n";
+//    String RESP_OK = "HTTP/1.1 200 OK\n";
+//    String CONN_CLOSED = "Connection: Closed\n";
+//    String RESP_NOT_FOUND = "HTTP/1.1 404 Not Found\n";
+    String RESP_OK = "HTTP/1.1 200 OK\r\n";
+    String CONN_CLOSED = "Connection: Closed\r\n";
+    String RESP_NOT_FOUND = "HTTP/1.1 404 Not Found\r\n";
 
     public String readfile(String filename) {
         File f = new File("webroot/" + filename);
@@ -28,7 +35,7 @@ public class JHttp {
         }
     }
 
-    public byte[] readBinaryFIle(String filename){
+    public byte[] readBinaryFIle(String filename) {
         File f = new File("webroot/" + filename);
         if (!f.exists()) {
             return null;
@@ -37,7 +44,7 @@ public class JHttp {
         byte[] fileContent = new byte[len];
 
         try {
-            FileInputStream fileIS=new FileInputStream(f);
+            FileInputStream fileIS = new FileInputStream(f);
             fileIS.read(fileContent);
             return fileContent;
         } catch (FileNotFoundException e) {
@@ -49,24 +56,40 @@ public class JHttp {
         }
     }
 
-    RespData processRequest(String relativePath){
-        if("/".equals(relativePath))
-            relativePath="/index.html";
-        RespData respData=new RespData();
+    RespData processRequestByPath(String relativePath) {
+        if ("/".equals(relativePath))
+            relativePath = "/index.html";
+        RespData respData = new RespData();
 
-        if(relativePath.endsWith("favicon.ico")){
-            respData.respType="Content-Type: image/x-icon\n";
+        if (relativePath.endsWith("favicon.ico")) {
+            respData.respType = "Content-Type: image/x-icon\r\n";
 //            respData.respBody=readBinaryFIle(relativePath);
         }
 
-        return  null;
+        return null;
+    }
+
+    public String processRequest(String requst) {
+        String[] sArr = requst.split(" ");
+        System.out.println("req path: " + sArr[1]);
+
+        String body = "hi";
+        StringBuilder sb = new StringBuilder();
+        sb.append("HTTP/1.1 200 OK\r\n");
+//        sb.append(CONN_CLOSED);
+//        sb.append("Content-Type: text/plain\r\n");
+//        sb.append("Content-Length: " + body.length() + "\r\n\r\n");
+        sb.append("Content-Type: text/plain\r\n");
+        sb.append("Content-Length: " + body.length() + "\r\n\r\n");
+        sb.append(body);
+        return sb.toString();
     }
 
 
     public static void main(String[] args) {
         System.out.println("hi");
 
-        TheSelector ts=new TheSelector();
+        TheSelector ts = new TheSelector();
         try {
             ts.begin();
         } catch (IOException e) {
@@ -82,7 +105,7 @@ public class JHttp {
     }
 }
 
-class RespData{
+class RespData {
     int type;
     String respType;
     String respBody;
