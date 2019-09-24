@@ -40,36 +40,36 @@ public class NioTest {
                     acceptedChannel.configureBlocking(false);
                     acceptedChannel.register(selector, SelectionKey.OP_READ);
                     SelectionKey newKey = acceptedChannel.keyFor(selector);
-                    number++;
-                    newKey.attach(number);
-                    System.out.println("accept number: " + number);
+//                    number++;
+//                    newKey.attach(number);
+//                    System.out.println("accept number: " + number);
+                    ChannelHandler ch = new ChannelHandler(newKey);
+                    ch.onConnected();
+                    newKey.attach(ch);
                 }
                 // read
                 if (cur.isReadable()) {
-                    System.out.println("read hash:" + cur.hashCode());
-//
-                    int num = -1;
-//                    if(cur.attachment()!=null){
-                    num = Integer.parseInt(cur.attachment().toString());
-//                    }else{
-//                        number++;
-//                        cur.attach(number);
-//                    }
-                    SocketChannel channel = (SocketChannel) cur.channel();
-                    ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-                    int len = channel.read(byteBuffer);
-                    System.out.println("收到数据长度：" + len + " ," + channel.isConnected() + ", " + channel.isOpen() + " ," + channel.isConnectionPending());
-                    if (len == -1) {
-                        System.out.println(num+" closed");
-                        channel.close();
-                    } else if (len == 0) {
+                    ChannelHandler ch = (ChannelHandler) cur.attachment();
+                    ch.onDataArrived();
 
-                    } else {
-                        String s = new String(byteBuffer.array(), 0, len);
-                        System.out.println("-----------------------------------------");
-                        System.out.println(num + " read: " + s);
-                        System.out.println();
-                    }
+//                    System.out.println("read hash:" + cur.hashCode());
+//                    int num = -1;
+//                    num = Integer.parseInt(cur.attachment().toString());
+//                    SocketChannel channel = (SocketChannel) cur.channel();
+//                    ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+//                    int len = channel.read(byteBuffer);
+//                    System.out.println("收到数据长度：" + len + " ," + channel.isConnected() + ", " + channel.isOpen() + " ," + channel.isConnectionPending());
+//                    if (len == -1) {
+//                        System.out.println(num+" closed");
+//                        channel.close();
+//                    } else if (len == 0) {
+//
+//                    } else {
+//                        String s = new String(byteBuffer.array(), 0, len);
+//                        System.out.println("-----------------------------------------");
+//                        System.out.println(num + " read: " + s);
+//                        System.out.println();
+//                    }
                 }
                 itr.remove();
                 ;
