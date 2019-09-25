@@ -20,8 +20,8 @@ public class ChannelHandler {
     SelectionKey selectionKey;
     SocketChannel channel;
 
-    ByteBuffer inputBuffer = ByteBuffer.allocate(1024 * 4);
-    ByteBuffer outputBuffer = ByteBuffer.allocate(1024 * 200);
+    static ByteBuffer inputBuffer = ByteBuffer.allocate(1024 * 4);
+    static ByteBuffer outputBuffer = ByteBuffer.allocate(1024 * 200);
 
 //    public static ChannelHandler find(long hash) {
 //        for (int i = 0; i < chList.size(); i++) {
