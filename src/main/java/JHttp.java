@@ -7,7 +7,7 @@ public class JHttp {
     String CONN_CLOSED = "Connection: Closed\n";
     String RESP_NOT_FOUND = "HTTP/1.1 404 Not Found\n";
 
-    static Map<String, RespData> cacheRespData = new HashMap<String, RespData>();
+    static Map<String, byte[]> cacheRespData = new HashMap<String, byte[]>();
 
     public String readfile(String filename) throws IOException {
         File f = new File("webroot/" + filename);
@@ -45,10 +45,6 @@ public class JHttp {
         if ("/".equals(relativePath))
             relativePath = "/index.html";
 
-        if (cacheRespData.containsKey(relativePath)) {
-            return cacheRespData.get(relativePath);
-        }
-
         try {
             if (relativePath.endsWith(".html")) {
                 respData.respType = "Content-Type: text/html\n";
@@ -74,25 +70,30 @@ public class JHttp {
             return null;
         }
 
-        if (respData != null && !cacheRespData.containsKey(relativePath)) {
-            cacheRespData.put(relativePath, respData);
-        }
-
         return respData;
     }
 
     public byte[] processRequest(String requst) {
         String[] sArr = requst.split(" ");
-        String filename = sArr[1];
+        String reqURL = null;
+        if (sArr != null && sArr.length > 1) {
+            reqURL = sArr[1];
+        } else {
+            reqURL = "/";
+        }
 
-        RespData respData = processRequestByPath(filename);
+        // 从缓存中查找
+        if (cacheRespData.containsKey(reqURL)) {
+            return cacheRespData.get(reqURL);
+        }
+
+        RespData respData = processRequestByPath(reqURL);
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         StringBuilder sb = new StringBuilder();
 
         if (respData != null) {
             byte[] body = respData.getBody();
-//            String body = "你好";
             sb.append(RESP_OK);
             sb.append(respData.respType);
 
@@ -110,7 +111,6 @@ public class JHttp {
                 e.printStackTrace();
             }
 
-
         } else {
             sb.append(RESP_NOT_FOUND);
             sb.append("Content-Length: " + 0 + "\n\n");
@@ -122,7 +122,14 @@ public class JHttp {
             }
         }
 
-        return byteArrayOutputStream.toByteArray();
+        byte[] respBytes = byteArrayOutputStream.toByteArray();
+
+        // 加入缓存
+        if (respData != null && !cacheRespData.containsKey(reqURL)) {
+            cacheRespData.put(reqURL, respBytes);
+        }
+
+        return respBytes;
     }
 
 }
