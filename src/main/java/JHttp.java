@@ -1,9 +1,13 @@
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JHttp {
     String RESP_OK = "HTTP/1.1 200 OK\n";
     String CONN_CLOSED = "Connection: Closed\n";
     String RESP_NOT_FOUND = "HTTP/1.1 404 Not Found\n";
+
+    static Map<String, RespData> cacheRespData = new HashMap<String, RespData>();
 
     public String readfile(String filename) throws IOException {
         File f = new File("webroot/" + filename);
@@ -18,7 +22,6 @@ public class JHttp {
         FileReader reader = new FileReader(f);
         int actLen = reader.read(fileContent);
         String result = new String(fileContent, 0, actLen);
-        System.out.println("has read file " + actLen);
         return result;
     }
 
@@ -41,6 +44,10 @@ public class JHttp {
 
         if ("/".equals(relativePath))
             relativePath = "/index.html";
+
+        if (cacheRespData.containsKey(relativePath)) {
+            return cacheRespData.get(relativePath);
+        }
 
         try {
             if (relativePath.endsWith(".html")) {
@@ -67,13 +74,16 @@ public class JHttp {
             return null;
         }
 
+        if (respData != null && !cacheRespData.containsKey(relativePath)) {
+            cacheRespData.put(relativePath, respData);
+        }
+
         return respData;
     }
 
     public byte[] processRequest(String requst) {
         String[] sArr = requst.split(" ");
         String filename = sArr[1];
-        System.out.println("req path: " + filename);
 
         RespData respData = processRequestByPath(filename);
 
@@ -88,10 +98,8 @@ public class JHttp {
 
             if (body != null) {
                 sb.append("Content-Length: " + body.length + "\n\n");
-                System.out.println("resp body len:" + body.length);
             } else {
                 sb.append("Content-Length: " + 0 + "\n\n");
-                System.out.println("resp body len:" + 0);
             }
             try {
                 byteArrayOutputStream.write(sb.toString().getBytes());

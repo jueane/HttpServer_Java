@@ -11,14 +11,17 @@ import java.util.List;
 
 public class ChannelHandler {
 
+
+    static JHttp jHttp=new JHttp();
+
 //    static List<ChannelHandler> chList = new ArrayList<ChannelHandler>();
 
     Selector selector;
     SelectionKey selectionKey;
     SocketChannel channel;
 
-    ByteBuffer inputBuffer = ByteBuffer.allocate(1024 * 1024 * 20);
-    ByteBuffer outputBuffer = ByteBuffer.allocate(1024 * 1024 * 20);
+    ByteBuffer inputBuffer = ByteBuffer.allocate(1024 * 4);
+    ByteBuffer outputBuffer = ByteBuffer.allocate(1024 * 200);
 
 //    public static ChannelHandler find(long hash) {
 //        for (int i = 0; i < chList.size(); i++) {
@@ -48,7 +51,7 @@ public class ChannelHandler {
 //    }
 
     public void onConnected() {
-        System.out.println("New connection " + hashCode());
+//        System.out.println("New connection " + hashCode());
     }
 
     public void onDataArrived() {
@@ -72,10 +75,9 @@ public class ChannelHandler {
         } else {
             inputBuffer.flip();
             String s = new String(inputBuffer.array(), 0, len);
-            System.out.println("------read-----------------------------------");
+//            System.out.println("------read-----------------------------------");
 
             // 传给httpHandler处理
-            JHttp jHttp = new JHttp();
             byte[] respByts = jHttp.processRequest(s);
 
             outputBuffer.clear();
@@ -86,7 +88,7 @@ public class ChannelHandler {
 
 
     public void onReadyWrite() {
-        System.out.println("-------write-------------------------------");
+//        System.out.println("-------write-------------------------------");
         outputBuffer.flip();
         try {
             channel.write(outputBuffer);

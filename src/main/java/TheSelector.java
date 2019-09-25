@@ -22,6 +22,7 @@ public class TheSelector {
             return;
         }
 
+
         while (true) {
             try {
                 selector.select();
@@ -34,13 +35,10 @@ public class TheSelector {
                     // accept
                     if (cur.isAcceptable()) {
                         ChannelHandler ch=null;
-
-
-//                        ch = new ChannelHandler();
                         try{
                              ch = new ChannelHandler();
                         }catch (OutOfMemoryError ex){
-                            itr.remove();
+//                            itr.remove();
                             continue;
                         }
 
