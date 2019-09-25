@@ -33,12 +33,25 @@ public class TheSelector {
 
                     // accept
                     if (cur.isAcceptable()) {
+                        ChannelHandler ch=null;
+
+
+//                        ch = new ChannelHandler();
+                        try{
+                             ch = new ChannelHandler();
+                        }catch (OutOfMemoryError ex){
+                            itr.remove();
+                            continue;
+                        }
+
                         // AcceptableKey中channel就是ServerSocketChannel
                         SocketChannel acceptedChannel = ssc.accept();
                         acceptedChannel.configureBlocking(false);
                         acceptedChannel.register(selector, SelectionKey.OP_READ);
                         SelectionKey newKey = acceptedChannel.keyFor(selector);
-                        ChannelHandler ch = new ChannelHandler(newKey);
+
+                        ch.init(newKey);
+
                         ch.onConnected();
                         newKey.attach(ch);
                     }

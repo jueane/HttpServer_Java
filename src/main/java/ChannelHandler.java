@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ChannelHandler {
 
-    static List<ChannelHandler> chList = new ArrayList<ChannelHandler>();
+//    static List<ChannelHandler> chList = new ArrayList<ChannelHandler>();
 
     Selector selector;
     SelectionKey selectionKey;
@@ -20,29 +20,32 @@ public class ChannelHandler {
     ByteBuffer inputBuffer = ByteBuffer.allocate(1024 * 1024 * 20);
     ByteBuffer outputBuffer = ByteBuffer.allocate(1024 * 1024 * 20);
 
-    static int globalnum = 0;
+//    public static ChannelHandler find(long hash) {
+//        for (int i = 0; i < chList.size(); i++) {
+//            ChannelHandler ch = chList.get(i);
+//            if (ch.channel.hashCode() == hash) {
+//                return ch;
+//            }
+//        }
+//        return null;
+//    }
 
-    int num;
-
-    public static ChannelHandler find(long hash) {
-        for (int i = 0; i < chList.size(); i++) {
-            ChannelHandler ch = chList.get(i);
-            if (ch.channel.hashCode() == hash) {
-                return ch;
-            }
-        }
-        return null;
-    }
-
-
-    public ChannelHandler(SelectionKey skey) {
+    public void init(SelectionKey skey) {
         selectionKey = skey;
         channel = (SocketChannel) selectionKey.channel();
-        num = ++globalnum;
         selector = skey.selector();
 
-        chList.add(this);
+//        chList.add(this);
     }
+
+//    public ChannelHandler(SelectionKey skey) {
+//        selectionKey = skey;
+//        channel = (SocketChannel) selectionKey.channel();
+//        num = ++globalnum;
+//        selector = skey.selector();
+//
+//        chList.add(this);
+//    }
 
     public void onConnected() {
         System.out.println("New connection " + hashCode());
@@ -87,10 +90,12 @@ public class ChannelHandler {
         outputBuffer.flip();
         try {
             channel.write(outputBuffer);
+            channel.close();
+//            chList.remove(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        requestRead();
+//        requestRead();
     }
 
     void requestRead() {
