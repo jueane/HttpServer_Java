@@ -52,7 +52,7 @@ public class NioTest {
                     if (cur.attachment() != null) {
                         ChannelHandler ch = (ChannelHandler) cur.attachment();
                         ch.onReadyWrite();
-                        System.out.println("写一次");
+//                        System.out.println("写一次");
                     }
                 }
                 itr.remove();
