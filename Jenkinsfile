@@ -28,7 +28,7 @@ pipeline {
             steps {
                 echo 'Run....'
 				sh 'sh stop.sh'
-				sh 'start.sh'				
+				sh 'sh start.sh'
 				
             }
         }
