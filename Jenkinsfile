@@ -29,6 +29,7 @@ pipeline {
                 echo 'Run....'
 				
 				sh 'sh start.sh'
+				sh 'sleep 10'
 				
             }
         }
