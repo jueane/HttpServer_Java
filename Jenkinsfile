@@ -5,8 +5,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-				mkdir /root/a
-				mkdir /root/b
+				sh 'mkdir /root/a'
+				sh 'mkdir /root/b'
             }
         }
         stage('Test') {
