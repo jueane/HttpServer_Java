@@ -28,8 +28,7 @@ pipeline {
             steps {
                 echo 'Run....'
 				
-				sh 'sh start.sh'
-				sh 'sleep 10'
+				sh 'sh start.sh'				
 				
             }
         }
