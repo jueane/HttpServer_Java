@@ -27,7 +27,7 @@ pipeline {
         stage('Run') {
             steps {
                 echo 'Run....'
-				
+				sh 'sh stop.sh'
 				sh 'sh start.sh'				
 				
             }
