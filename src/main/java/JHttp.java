@@ -7,10 +7,21 @@ public class JHttp {
     String CONN_CLOSED = "Connection: Closed\n";
     String RESP_NOT_FOUND = "HTTP/1.1 404 Not Found\n";
 
+    String rootpath;
+
     static Map<String, byte[]> cacheRespData = new HashMap<String, byte[]>();
 
+    public JHttp(){
+        String os = System.getenv("OS");
+        if("Windows_NT".equals(os)){
+            rootpath="webroot/";
+        }else{
+            rootpath="/root/webapps/web_share/";
+        }
+    }
+
     public String readfile(String filename) throws IOException {
-        File f = new File("webroot/" + filename);
+        File f = new File(rootpath + filename);
 
         if (!f.exists()) {
             System.out.println("file not found:" + f.getAbsolutePath());
@@ -27,12 +38,7 @@ public class JHttp {
 
     public byte[] readBinaryFIle(String filename) throws IOException {
         File f = null;
-        String os = System.getenv("OS");
-        if("Windows_NT".equals(os)){
-            f = new File("webroot/" + filename);
-        }else{
-            f = new File("/root/webapps/web_share/" + filename);
-        }
+        f = new File(rootpath + filename);
 
         if (!f.exists()) {
             System.out.println("file not found:" + f.getAbsolutePath());
