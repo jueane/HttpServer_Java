@@ -14,7 +14,7 @@ public class TheSelector {
         try {
             selector = Selector.open();
             ssc = ServerSocketChannel.open();
-            ssc.socket().bind(new InetSocketAddress(7009));
+            ssc.socket().bind(new InetSocketAddress(7777));
             ssc.configureBlocking(false);
             ssc.register(selector, SelectionKey.OP_ACCEPT);
         } catch (IOException e) {
