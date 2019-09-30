@@ -26,7 +26,14 @@ public class JHttp {
     }
 
     public byte[] readBinaryFIle(String filename) throws IOException {
-        File f = new File("webroot/" + filename);
+        File f = null;
+        String os = System.getenv("OS");
+        if("Windows_NT".equals(os)){
+            f = new File("webroot/" + filename);
+        }else{
+            f = new File("/root/webapps/web_share/" + filename);
+        }
+
         if (!f.exists()) {
             System.out.println("file not found:" + f.getAbsolutePath());
             throw new IOException();
