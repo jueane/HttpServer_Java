@@ -26,7 +26,7 @@ public class MsgQueue {
 
     MsgQueue() {
         try {
-            msgQueue.getChannel();
+            getChannel();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
@@ -49,6 +49,7 @@ public class MsgQueue {
         }
         conn = getConnection();
         channel = conn.createChannel();
+        channel.queueDeclare(queue_name, false, false, false, null);
         return channel;
     }
 
