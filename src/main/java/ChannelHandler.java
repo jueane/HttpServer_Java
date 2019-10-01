@@ -1,20 +1,13 @@
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ChannelHandler {
-
-
     static JHttp jHttp=new JHttp();
 
-//    static List<ChannelHandler> chList = new ArrayList<ChannelHandler>();
+    String uid;
 
     Selector selector;
     SelectionKey selectionKey;
@@ -23,32 +16,15 @@ public class ChannelHandler {
     static ByteBuffer inputBuffer = ByteBuffer.allocate(1024 * 4);
     static ByteBuffer outputBuffer = ByteBuffer.allocate(1024 * 200);
 
-//    public static ChannelHandler find(long hash) {
-//        for (int i = 0; i < chList.size(); i++) {
-//            ChannelHandler ch = chList.get(i);
-//            if (ch.channel.hashCode() == hash) {
-//                return ch;
-//            }
-//        }
-//        return null;
-//    }
-
     public void init(SelectionKey skey) {
         selectionKey = skey;
         channel = (SocketChannel) selectionKey.channel();
         selector = skey.selector();
 
-//        chList.add(this);
+        uid =System.currentTimeMillis() +"_"+ hashCode();;
+        // 日志_连接
+        MsgQueue.current().publish("connect:"+ uid);
     }
-
-//    public ChannelHandler(SelectionKey skey) {
-//        selectionKey = skey;
-//        channel = (SocketChannel) selectionKey.channel();
-//        num = ++globalnum;
-//        selector = skey.selector();
-//
-//        chList.add(this);
-//    }
 
     public void onConnected() {
 //        System.out.println("New connection " + hashCode());
@@ -78,7 +54,7 @@ public class ChannelHandler {
 //            System.out.println("------read-----------------------------------");
 
             // 传给httpHandler处理
-            byte[] respByts = jHttp.processRequest(s);
+            byte[] respByts = jHttp.processRequest(s,this);
 
             outputBuffer.clear();
             outputBuffer.put(respByts);
@@ -86,12 +62,15 @@ public class ChannelHandler {
         }
     }
 
-
     public void onReadyWrite() {
 //        System.out.println("-------write-------------------------------");
         outputBuffer.flip();
         try {
             channel.write(outputBuffer);
+
+            // 日志_应答
+            MsgQueue.current().publish("resp:"+ uid);
+
             channel.close();
 //            chList.remove(this);
         } catch (IOException e) {

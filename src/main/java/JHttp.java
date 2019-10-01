@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JHttp {
+
     String RESP_OK = "HTTP/1.1 200 OK\n";
     String CONN_CLOSED = "Connection: Closed\n";
     String RESP_NOT_FOUND = "HTTP/1.1 404 Not Found\n";
@@ -86,7 +87,7 @@ public class JHttp {
         return respData;
     }
 
-    public byte[] processRequest(String requst) {
+    public byte[] processRequest(String requst,ChannelHandler ch) {
         String[] sArr = requst.split(" ");
         String reqURL = null;
         if (sArr != null && sArr.length > 1) {
@@ -94,6 +95,9 @@ public class JHttp {
         } else {
             reqURL = "/";
         }
+
+        // 日志_请求
+        MsgQueue.current().publish("req "+reqURL+" uid:"+ch.uid);
 
         // 从缓存中查找
         if (cacheRespData.containsKey(reqURL)) {
