@@ -41,36 +41,25 @@ public class TestRabbitMQ {
         Channel channel = conn.createChannel();
         String queuename = "reqest_log";
 
-        List<String> cnList=new ArrayList<>();
-        List<String> reqList=new ArrayList<>();
-        List<String> respListt=new ArrayList<>();
+        FileWriter fw = new FileWriter("msg.output");
+        BufferedWriter bfw = new BufferedWriter(fw);
 
-	FileWriter fw=new FileWriter("msg.output");
-	BufferedWriter bfw=new BufferedWriter(fw);
-	
         GetResponse resp = null;
-	int i=0;
+        int i = 0;
         while (true) {
             resp = channel.basicGet(queuename, true);
             if (resp == null) {
                 break;
-	    } 
+            }
 
-	    if(i%100==0){
-		    bfw.flush();
-	    }
+            if (i % 100 == 0) {
+                bfw.flush();
+            }
 
-	    String  msg=new String(resp.getBody());
-	    bfw.write(msg);
-	    bfw.write('\n');
-//	    if(msg.contains("connect"))
-//                cnList.add(msg);
-//            if(msg.contains("req /"))
-//                reqList.add(msg);
-//            if(msg.contains("resp"))
-//                respListt.add(msg);
-
-	    i++;
+            String msg = new String(resp.getBody());
+            bfw.write(msg);
+            bfw.write('\n');
+            i++;
             System.out.println(i + "        " + " " + msg);
         }
 
@@ -78,20 +67,13 @@ public class TestRabbitMQ {
             channel.close();
         }
         conn.close();
-
-        //分析
-//        System.out.println("conn :"+cnList.size());
-//        System.out.println("req:"+reqList.size());
-//        System.out.println("resp :"+respListt.size());
-
-	bfw.flush();
-	bfw.close();
-
+        bfw.flush();
+        bfw.close();
     }
 
     public static void main(String[] args) throws InterruptedException, TimeoutException, IOException {
         //new TestRabbitMQ().consumeMsgConcurrent();
-	new TestRabbitMQ().consumeMsgSingle();	
+        new TestRabbitMQ().consumeMsgSingle();
     }
 
     public void consumeMsgConcurrent() throws IOException, TimeoutException, InterruptedException {
@@ -105,21 +87,21 @@ public class TestRabbitMQ {
         AtomicBoolean stop = new AtomicBoolean();
 
 //        AtomicReference<String> tag=new AtomicReference<>();
-        ConcurrentSkipListSet cnList=new ConcurrentSkipListSet();
-        ConcurrentSkipListSet reqList=new ConcurrentSkipListSet();
-        ConcurrentSkipListSet respListt=new ConcurrentSkipListSet();
+        ConcurrentSkipListSet cnList = new ConcurrentSkipListSet();
+        ConcurrentSkipListSet reqList = new ConcurrentSkipListSet();
+        ConcurrentSkipListSet respListt = new ConcurrentSkipListSet();
 
 
         DeliverCallback deliverCallback = (consumerTag, dilivery) -> {
             String msg = new String(dilivery.getBody(), "UTF-8");
 //            System.out.println(Thread.currentThread().getId() + "        " + "recv: " + msg);
 
-	    //dilivery.getProperties().getTimestamp().getDate();
-            if(msg.contains("connect"))
+            //dilivery.getProperties().getTimestamp().getDate();
+            if (msg.contains("connect"))
                 cnList.add(msg);
-            if(msg.contains("req /"))
+            if (msg.contains("req /"))
                 reqList.add(msg);
-            if(msg.contains("resp"))
+            if (msg.contains("resp"))
                 respListt.add(msg);
 
         };
@@ -131,9 +113,9 @@ public class TestRabbitMQ {
 
         Thread.sleep(5000);
         //分析
-        System.out.println("conn :"+cnList.size());
-        System.out.println("req:"+reqList.size());
-        System.out.println("resp :"+respListt.size());
+        System.out.println("conn :" + cnList.size());
+        System.out.println("req:" + reqList.size());
+        System.out.println("resp :" + respListt.size());
 
         if (channel.isOpen()) {
             channel.close();
