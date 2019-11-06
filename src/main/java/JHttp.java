@@ -17,7 +17,7 @@ public class JHttp {
         if("Windows_NT".equals(os)){
             rootpath="webroot/";
         }else{
-            rootpath="/root/webapps/web_share/";
+            rootpath="/root/webapps/mysite_symbol/";
         }
     }
 
