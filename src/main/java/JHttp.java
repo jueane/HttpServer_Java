@@ -8,6 +8,9 @@ public class JHttp {
     String CONN_CLOSED = "Connection: Closed\n";
     String RESP_NOT_FOUND = "HTTP/1.1 404 Not Found\n";
 
+    //应答标记，用以区分最终服务端
+    String RESP_IDENTIFIER = "RespByJM: Yes\n";
+
     String rootpath;
 
     static Map<String, byte[]> cacheRespData = new HashMap<String, byte[]>();
@@ -112,6 +115,7 @@ public class JHttp {
         if (respData != null) {
             byte[] body = respData.getBody();
             sb.append(RESP_OK);
+            sb.append(RESP_IDENTIFIER);
             sb.append(respData.respType);
 
             if (body != null) {
