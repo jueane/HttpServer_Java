@@ -20,7 +20,7 @@ public class JHttp {
         if("Windows_NT".equals(os)){
             rootpath="webroot/";
         }else{
-            rootpath="/root/webapps/mysite_symbol/";
+            rootpath="/var/lib/jenkins/workspace/mysite/webroot";
         }
     }
 
