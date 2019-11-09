@@ -9,7 +9,7 @@ public class JHttp {
     String RESP_NOT_FOUND = "HTTP/1.1 404 Not Found\n";
 
     //应答标记，用以区分最终服务端
-    String RESP_IDENTIFIER = "RespByJM: Yes\n";
+    String RESP_IDENTIFIER = "Resp@JMServer\n";
 
     String rootpath;
 
