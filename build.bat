@@ -1,12 +1,11 @@
 docker stop httpserver_java
 
-@echo  -----------------------
 docker rm httpserver_java
 
-@echo -----------------------
-docker build -t httpjava .
+docker rmi httpjavajm
 
-@echo -----------------------
-docker run -d --name httpserver_java -p 7777:7777 httpjava
+docker build -t httpjavajm .
+
+docker run -d --name httpserver_java -p 7777:7777 httpjavajm
 
 

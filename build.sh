@@ -1,6 +1,8 @@
 docker stop httpserver_java || true
 
-docker rm httpserver_java	|| true
+docker rm httpserver_java   || true
+
+docker rmi httpjavajm   || true
 
 docker build -t httpjavajm .
 
