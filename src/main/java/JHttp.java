@@ -20,8 +20,8 @@ public class JHttp {
         System.out.println("OS is " + os);
         if ("Windows_NT".equals(os)) {
             rootpath = "webroot/";
-            File f=new File(rootpath);
-            if(!f.exists()){
+            File f = new File(rootpath);
+            if (!f.exists()) {
                 rootpath = "../mysite/webroot/";
             }
         } else {
@@ -31,6 +31,7 @@ public class JHttp {
 //                rootpath = "webroot/";
 //            }
         }
+        System.out.println("html path: " + rootpath);
     }
 
     public String readfile(String filename) throws IOException {
