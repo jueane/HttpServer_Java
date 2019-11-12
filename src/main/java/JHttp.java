@@ -25,11 +25,11 @@ public class JHttp {
                 rootpath = "../mysite/webroot/";
             }
         } else {
-            rootpath = "../mysite/webroot/";
-            File f=new File(rootpath);
-            if(!f.exists()){
-                rootpath = "webroot/";
-            }
+            rootpath = "webroot/";
+//            File f=new File(rootpath);
+//            if(!f.exists()){
+//                rootpath = "webroot/";
+//            }
         }
     }
 
