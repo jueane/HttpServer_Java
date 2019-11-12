@@ -15,12 +15,21 @@ public class JHttp {
 
     static Map<String, byte[]> cacheRespData = new HashMap<String, byte[]>();
 
-    public JHttp(){
+    public JHttp() {
         String os = System.getenv("OS");
-        if("Windows_NT".equals(os)){
-            rootpath="webroot/";
-        }else{
-            rootpath="../mysite/webroot/";
+        System.out.println("OS is " + os);
+        if ("Windows_NT".equals(os)) {
+            rootpath = "webroot/";
+            File f=new File(rootpath);
+            if(!f.exists()){
+                rootpath = "../mysite/webroot/";
+            }
+        } else {
+            rootpath = "../mysite/webroot/";
+            File f=new File(rootpath);
+            if(!f.exists()){
+                rootpath = "webroot/";
+            }
         }
     }
 
@@ -90,7 +99,7 @@ public class JHttp {
         return respData;
     }
 
-    public byte[] processRequest(String requst,ChannelHandler ch) {
+    public byte[] processRequest(String requst, ChannelHandler ch) {
         String[] sArr = requst.split(" ");
         String reqURL = null;
         if (sArr != null && sArr.length > 1) {
@@ -100,7 +109,7 @@ public class JHttp {
         }
 
         // 日志_请求
-        MsgQueue.current().publish("req "+reqURL+" uid:"+ch.uid);
+        MsgQueue.current().publish("req " + reqURL + " uid:" + ch.uid);
 
         // 从缓存中查找
         if (cacheRespData.containsKey(reqURL)) {
