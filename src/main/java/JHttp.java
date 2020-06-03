@@ -109,18 +109,19 @@ public class JHttp {
             reqURL = "/";
         }
 
-        String clientAddr=null;
-        try {
-            clientAddr = ch.channel.getRemoteAddress().toString();
-            if (clientAddr != null && clientAddr.contains("/")) {
-                clientAddr = clientAddr.replace("/", "");
-            }
-            System.out.println(clientAddr);
-        } catch (IOException ex) {
-        }
+//        String clientAddr=null;
+//        try {
+//            clientAddr = ch.channel.getRemoteAddress().toString();
+//            if (clientAddr != null && clientAddr.contains("/")) {
+//                clientAddr = clientAddr.replace("/", "");
+//            }
+//            System.out.println(clientAddr);
+//        } catch (IOException ex) {
+//        }
 
         // 日志_请求
-        MsgQueue.current().publish("req " + reqURL + " uid:" + ch.uid+" &&& clientAddr:"+clientAddr);
+//        MsgQueue.current().publish("req " + reqURL + " uid:" + ch.uid+" &&& clientAddr:"+clientAddr);
+        MsgQueue.current().publish("req " + reqURL + " uid:" + ch.uid);
 
         // 从缓存中查找
         if (cacheRespData.containsKey(reqURL)) {
